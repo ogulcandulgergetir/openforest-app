@@ -38,6 +38,21 @@ function Map() {
                         'icon-offset': [0, -15],
                     },
                 })
+
+                map.current.on('click', 'capitals-layer', (e) => {
+
+                    const coordinates = e.features[0].geometry.coordinates.slice();
+                    const name = e.features[0].properties.name;
+
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+                    
+                    new mapboxgl.Popup()
+                    .setLngLat(coordinates)
+                    .setHTML(name)
+                    .addTo(map.current);
+                    });             
             })
         })
         .catch(err => {
