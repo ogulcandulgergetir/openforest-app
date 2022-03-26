@@ -3,6 +3,8 @@ import mapboxgl from 'mapbox-gl'
 import { config } from '../../Constants'
 import "./Map.css";
 import Sidebar from '../sidebar/Sidebar'
+import axios from "axios";
+
 
 
 mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
@@ -13,6 +15,35 @@ function Map() {
     const [lng, setLng] = useState(11);
     const [lat, setLat] = useState(48);
     const [zoom, setZoom] = useState(3);
+    const [capitals, setCapitals] = useState();
+
+    const fetchCapital = () => {
+        axios
+        .get('europe-capitals.json')
+        .then(res => {
+            let capitals = res.data
+            setCapitals(capitals);
+            map.current.on('load', () => {
+                map.current.addSource('capitals', {
+                    type: 'geojson',
+                    data: capitals
+                })
+        
+                map.current.addLayer( {
+                    'id': 'capitals-layer',
+                    'type': 'symbol',
+                    'source': 'capitals',
+                    'layout': {
+                        'icon-image': 'location',
+                        'icon-offset': [0, -15],
+                    },
+                })
+            })
+        })
+        .catch(err => {
+        // capitalFail(err);
+        });
+    }
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -21,7 +52,7 @@ function Map() {
         style: config.MAPBOX_STYLE_URL,
         center: [lng, lat],
         zoom: zoom
-        });
+        });  
     });
 
     useEffect(() => {
@@ -31,6 +62,8 @@ function Map() {
         setLat(map.current.getCenter().lat.toFixed(4));
         setZoom(map.current.getZoom().toFixed(2));
         });
+
+        fetchCapital();
     });
 
     return (
