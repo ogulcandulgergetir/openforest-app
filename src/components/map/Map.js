@@ -6,23 +6,21 @@ import Sidebar from '../sidebar/Sidebar'
 import axios from "axios";
 
 
-
 mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
 
 function Map() {
+    
     const mapContainer = useRef(null);
     const map = useRef(null);
     const [lng, setLng] = useState(11);
     const [lat, setLat] = useState(48);
     const [zoom, setZoom] = useState(3);
-    const [capitals, setCapitals] = useState();
 
     const fetchCapital = () => {
         axios
         .get('europe-capitals.json')
         .then(res => {
             let capitals = res.data
-            setCapitals(capitals);
             map.current.on('load', () => {
                 map.current.addSource('capitals', {
                     type: 'geojson',
