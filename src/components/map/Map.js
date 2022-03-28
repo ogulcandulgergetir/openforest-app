@@ -9,6 +9,8 @@ import axios from "axios";
 mapboxgl.accessToken = config.MAPBOX_ACCESS_TOKEN;
 
 function Map() {
+
+    console.log(config.MAPBOX_ACCESS_TOKEN)
     
     const mapContainer = useRef(null);
     const map = useRef(null);
